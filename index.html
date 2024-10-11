@@ -63,12 +63,84 @@
             height: auto;
         }
 
-        .cart, .checkout-form {
-            margin: 20px 0;
+        .cart-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            position: relative;
         }
 
-        #checkout-form {
-            display: none;
+        /* Индикатор корзины */
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 12px;
+            display: none; /* Скрыт, если в корзине ничего нет */
+        }
+
+        /* Модальное окно для корзины */
+        .modal {
+            display: none; /* Скрыто по умолчанию */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cart-item button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        #total-price {
+            font-weight: bold;
         }
 
         /* Адаптивность для планшетов и телефонов */
@@ -126,7 +198,7 @@
             <button class="add-to-cart" data-name="Сигареты 1" data-price="200">Добавить в корзину</button>
         </div>
         <div class="product">
-            <img src="img/4823003210070_1.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
             <button class="add-to-cart" data-name="Сигареты 2" data-price="250">Добавить в корзину</button>
@@ -163,18 +235,22 @@
         </div>
         <!-- Добавьте больше товаров по необходимости -->
     </div>
+    <button class="cart-button" id="open-cart">Открыть корзину <span class="cart-count" id="cart-count">0</span></button>
 </main>
 
-<!-- Корзина -->
-<div class="cart">
-    <h2>Корзина</h2>
-    <ul id="cart-items"></ul>
-    <p>Итого: <span id="total-price">0</span>₽</p>
-    <button id="checkout">Оформить заказ</button>
+<!-- Модальное окно для корзины -->
+<div class="modal" id="cart-modal">
+    <div class="modal-content">
+        <button class="modal-close" id="close-cart">&times;</button>
+        <h2>Корзина</h2>
+        <ul class="cart-items" id="cart-items"></ul>
+        <p>Итого: <span id="total-price">0</span>₽</p>
+        <button id="checkout">Оформить заказ</button>
+    </div>
 </div>
 
 <!-- Форма для оформления заказа -->
-<div class="checkout-form" id="checkout-form">
+<div class="checkout-form" id="checkout-form" style="display:none;">
     <h2>Оформление заказа</h2>
     <form id="order-form">
         <label for="name">Имя:</label>
@@ -194,6 +270,27 @@
         const totalPriceElement = document.getElementById('total-price');
         const checkoutForm = document.getElementById('checkout-form');
         const orderForm = document.getElementById('order-form');
+        const cartModal = document.getElementById('cart-modal');
+        const openCartButton = document.getElementById('open-cart');
+        const closeCartButton = document.getElementById('close-cart');
+        const cartCountElement = document.getElementById('cart-count');
+
+        // Открытие модального окна корзины
+        openCartButton.addEventListener('click', () => {
+            cartModal.style.display = 'flex';
+        });
+
+        // Закрытие корзины при нажатии на крестик
+        closeCartButton.addEventListener('click', () => {
+            cartModal.style.display = 'none';
+        });
+
+        // Закрытие корзины при нажатии вне окна
+        cartModal.addEventListener('click', (event) => {
+            if (event.target === cartModal) {
+                cartModal.style.display = 'none';
+            }
+        });
 
         // Добавление товара в корзину
         document.querySelectorAll('.add-to-cart').forEach(button => {
@@ -205,22 +302,37 @@
             });
         });
 
+        // Удаление товара из корзины
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
         // Обновление корзины
         function updateCart() {
             cartItems.innerHTML = '';
             let total = 0;
-            cart.forEach(item => {
+            cart.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.textContent = `${item.name} - ${item.price}₽`;
+                li.classList.add('cart-item');
+                li.innerHTML = `
+                        ${item.name} - ${item.price}₽
+                        <button onclick="removeFromCart(${index})">Удалить</button>
+                    `;
                 cartItems.appendChild(li);
                 total += item.price;
             });
             totalPriceElement.textContent = total;
+
+            // Обновление счетчика товаров в корзине
+            cartCountElement.textContent = cart.length;
+            cartCountElement.style.display = cart.length > 0 ? 'inline-block' : 'none';
         }
 
         // Оформление заказа
         document.getElementById('checkout').addEventListener('click', () => {
             checkoutForm.style.display = 'block';
+            cartModal.style.display = 'none'; // Закрыть корзину при оформлении
         });
 
         // Отправка данных формы
@@ -248,6 +360,9 @@
                 `;
             fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`);
         }
+
+        // Сделать функцию удаления товара доступной для onclick
+        window.removeFromCart = removeFromCart;
     });
 </script>
 </body>
