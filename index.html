@@ -11,27 +11,94 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
+        /* Закрепленный хедер */
         header {
-            background-color: #333;
+            background-color: #b31b1b; /* Цвет в стиле Marlboro */
             color: white;
             padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: fixed; /* Закрепляем хедер */
+            width: 100%;
+            top: 0;
+            z-index: 100; /* Чтобы не перекрывался содержимым */
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #222;
+            margin-top: 60px; /* Добавляем отступ для контента, чтобы хедер не перекрывал */
+        }
+
+        header .logo {
+            display: flex;
+            align-items: center;
         }
 
         header .logo img {
             width: 50px;
+            margin-right: 10px;
+        }
+
+        /* Гамбургер-меню */
+        header .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        header .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
         }
 
         header .info {
             text-align: right;
+        }
+
+        header .info h1 {
+            font-family: 'Helvetica Neue', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 24px;
+        }
+
+        /* Боковое меню */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #b31b1b;
+            color: white;
+            padding: 20px;
+            transition: 0.3s ease;
+            z-index: 1000;
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .side-menu a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin: 15px 0;
+        }
+
+        /* Кнопка закрытия меню */
+        .side-menu .close-btn {
+            font-size: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
         }
 
         main {
@@ -46,12 +113,13 @@
         }
 
         .product {
-            background-color: white;
+            background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
             transition: transform 0.3s ease;
+            border: 2px solid #b31b1b; /* Красная рамка в стиле Marlboro */
         }
 
         .product:hover {
@@ -63,8 +131,12 @@
             height: auto;
         }
 
+        .product h3 {
+            color: #b31b1b; /* Красные заголовки */
+        }
+
         .cart-button {
-            background-color: #333;
+            background-color: #b31b1b;
             color: white;
             border: none;
             padding: 10px;
@@ -86,7 +158,7 @@
             display: none; /* Скрыт, если в корзине ничего нет */
         }
 
-        /* Модальное окно для корзины */
+        /* Модальное окно для корзины и формы */
         .modal {
             display: none; /* Скрыто по умолчанию */
             position: fixed;
@@ -119,6 +191,24 @@
             cursor: pointer;
         }
 
+        /* Поля формы, расположенные параллельно */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .form-field {
+            width: 48%; /* Поля занимают по 48% от ширины контейнера */
+        }
+
+        /* На мобильных устройствах поля будут на всю ширину */
+        @media (max-width: 600px) {
+            .form-field {
+                width: 100%;
+            }
+        }
+
         .cart-items {
             list-style-type: none;
             padding: 0;
@@ -131,8 +221,14 @@
             margin-bottom: 10px;
         }
 
+        .cart-item img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px; /* Отступ между изображением и текстом */
+        }
+
         .cart-item button {
-            background-color: red;
+            background-color: #b31b1b;
             color: white;
             border: none;
             padding: 5px 10px;
@@ -165,22 +261,34 @@
                 flex-direction: column;
                 text-align: center;
             }
+
+            header .hamburger {
+                display: flex; /* Показываем на малых экранах */
+            }
         }
 
         @media (max-width: 400px) {
             .catalog {
-                grid-template-columns: 1fr; /* 1 колонка для маленьких экранов */
+                grid-template-columns: repeat(2, 1fr); /* 2 колонки для маленьких экранов */
+            }
+
+            header {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-<!-- Хедер с логотипом и информацией -->
+<!-- Хедер с логотипом, гамбургер-меню и информацией -->
 <header>
     <div class="logo">
-         <img src="img/logo.png">
-        <img src="img/logo2.png"/>
-        <img src="img/logo1.png"/>
+        <img src="img/logo.png" alt="Логотип">
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     </div>
     <div class="info">
         <h1>Магазин сигарет</h1>
@@ -188,54 +296,74 @@
     </div>
 </header>
 
+<!-- Боковое меню -->
+<div class="side-menu" id="side-menu">
+    <span class="close-btn" id="close-menu">&times;</span>
+    <a href="#">О нас</a>
+    <a href="#">Доставка</a>
+    <a href="#">Контакты</a>
+    <a href="#">Политика конфиденциальности</a>
+</div>
+
 <!-- Каталог товаров -->
 <main>
     <h2>Каталог сигарет</h2>
     <div class="catalog">
         <!-- Пример товара -->
         <div class="product">
-            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" alt="Сигареты 1"/>
             <h3>Сигареты 1</h3>
             <p>Цена: 200₽</p>
-            <button class="add-to-cart" data-name="Сигареты 1" data-price="200">Добавить в корзину</button>
+            <button class="add-to-cart" data-name="Сигареты 1" data-price="200" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
         <div class="product">
-            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
-            <button class="add-to-cart" data-name="Сигареты 2" data-price="250">Добавить в корзину</button>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
         <div class="product">
-            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
-            <button class="add-to-cart" data-name="Сигареты 2" data-price="250">Добавить в корзину</button>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
         <div class="product">
-            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
-            <button class="add-to-cart" data-name="Сигареты 2" data-price="250">Добавить в корзину</button>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
         <div class="product">
-            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
-            <button class="add-to-cart" data-name="Сигареты 2" data-price="250">Добавить в корзину</button>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
         <div class="product">
-            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
-            <button class="add-to-cart" data-name="Сигареты 2" data-price="250">Добавить в корзину</button>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
         <div class="product">
-            <img src="img/4823003205557.jpg" height="1200" width="1200"/>
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
-            <button class="add-to-cart" data-name="Сигареты 2" data-price="250">Добавить в корзину</button>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
-        <!-- Добавьте больше товаров по необходимости -->
+        <div class="product">
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
+            <h3>Сигареты 2</h3>
+            <p>Цена: 250₽</p>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
+        </div>
+        <div class="product">
+            <img src="img/4823003205557.jpg" alt="Сигареты 2"/>
+            <h3>Сигареты 2</h3>
+            <p>Цена: 250₽</p>
+            <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003205557.jpg">Добавить в корзину</button>
+        </div>
     </div>
     <button class="cart-button" id="open-cart">Открыть корзину <span class="cart-count" id="cart-count">0</span></button>
 </main>
@@ -251,18 +379,31 @@
     </div>
 </div>
 
-<!-- Форма для оформления заказа -->
-<div class="checkout-form" id="checkout-form" style="display:none;">
-    <h2>Оформление заказа</h2>
-    <form id="order-form">
-        <label for="name">Имя:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="address">Адрес доставки:</label>
-        <input type="text" id="address" name="address" required>
-        <label for="phone">Телефон:</label>
-        <input type="tel" id="phone" name="phone" required>
-        <button type="submit">Отправить заказ</button>
-    </form>
+<!-- Модальное окно для оформления заказа -->
+<div class="modal" id="checkout-modal">
+    <div class="modal-content">
+        <button class="modal-close" id="close-checkout">&times;</button>
+        <h2>Оформление заказа</h2>
+        <form id="order-form">
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="name">Имя:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-field">
+                    <label for="phone">Телефон:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="address">Адрес доставки:</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+            </div>
+            <button type="submit">Отправить заказ</button>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -270,12 +411,15 @@
         const cart = [];
         const cartItems = document.getElementById('cart-items');
         const totalPriceElement = document.getElementById('total-price');
-        const checkoutForm = document.getElementById('checkout-form');
-        const orderForm = document.getElementById('order-form');
         const cartModal = document.getElementById('cart-modal');
+        const checkoutModal = document.getElementById('checkout-modal');
         const openCartButton = document.getElementById('open-cart');
         const closeCartButton = document.getElementById('close-cart');
+        const closeCheckoutButton = document.getElementById('close-checkout');
         const cartCountElement = document.getElementById('cart-count');
+        const hamburger = document.getElementById('hamburger');
+        const sideMenu = document.getElementById('side-menu');
+        const closeMenu = document.getElementById('close-menu');
 
         // Открытие модального окна корзины
         openCartButton.addEventListener('click', () => {
@@ -287,11 +431,18 @@
             cartModal.style.display = 'none';
         });
 
-        // Закрытие корзины при нажатии вне окна
-        cartModal.addEventListener('click', (event) => {
-            if (event.target === cartModal) {
-                cartModal.style.display = 'none';
-            }
+        // Закрытие окна оформления при нажатии на крестик
+        closeCheckoutButton.addEventListener('click', () => {
+            checkoutModal.style.display = 'none';
+        });
+
+        // Открытие и закрытие бокового меню
+        hamburger.addEventListener('click', () => {
+            sideMenu.classList.toggle('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            sideMenu.classList.remove('active');
         });
 
         // Добавление товара в корзину
@@ -299,7 +450,8 @@
             button.addEventListener('click', () => {
                 const name = button.getAttribute('data-name');
                 const price = parseInt(button.getAttribute('data-price'));
-                cart.push({ name, price });
+                const img = button.getAttribute('data-img');
+                cart.push({ name, price, img });
                 updateCart();
             });
         });
@@ -318,9 +470,10 @@
                 const li = document.createElement('li');
                 li.classList.add('cart-item');
                 li.innerHTML = `
-                        ${item.name} - ${item.price}₽
-                        <button onclick="removeFromCart(${index})">Удалить</button>
-                    `;
+                    <img src="${item.img}" alt="${item.name}">
+                    ${item.name} - ${item.price}₽
+                    <button onclick="removeFromCart(${index})">Удалить</button>
+                `;
                 cartItems.appendChild(li);
                 total += item.price;
             });
@@ -333,11 +486,12 @@
 
         // Оформление заказа
         document.getElementById('checkout').addEventListener('click', () => {
-            checkoutForm.style.display = 'block';
+            checkoutModal.style.display = 'flex';
             cartModal.style.display = 'none'; // Закрыть корзину при оформлении
         });
 
         // Отправка данных формы
+        const orderForm = document.getElementById('order-form');
         orderForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const formData = {
