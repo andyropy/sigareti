@@ -8,28 +8,22 @@
         .info {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center; /* Центрирование содержимого по горизонтали */
             margin-left: auto;
-            margin-right: 10px;
+            margin-right: auto; /* Авто-отступы для центрирования */
         }
-
-        .logo-image {
-            width: 50px;
+        .cart-icon {
+            width: 40px; /* Измените размер иконки */
+            margin-right: 5px; /* Увеличьте отступ справа */
         }
-
         .cart-header {
             display: flex;
             align-items: center;
             cursor: pointer;
-            margin-left: 10px;
+            margin-left: 10px; /* Уменьшите или увеличьте по желанию */
+            margin-right: 10px; /* Увеличьте правый отступ */
             position: relative;
         }
-
-        .cart-icon {
-            width: 30px;
-            margin-right: 10px;
-        }
-
         .cart-count {
             position: absolute;
             top: -5px;
@@ -41,13 +35,11 @@
             font-size: 12px;
             display: none;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         header {
             background-color: #b31b1b;
             color: white;
@@ -60,48 +52,40 @@
             width: 100%;
             z-index: 1000;
         }
-
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: #f9f9f9;
             color: #222;
             margin-top: 70px;
         }
-
         header .hamburger {
             display: flex;
             flex-direction: column;
             cursor: pointer;
         }
-
         header .hamburger div {
             width: 25px;
             height: 3px;
             background-color: white;
             margin: 4px 0;
         }
-
         header .info {
             text-align: left;
             margin-left: auto;
         }
-
         header .info h1 {
             font-family: 'Helvetica Neue', sans-serif;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 24px;
         }
-
         header .logo {
             display: flex;
             align-items: center;
         }
-
         header .logo img {
             width: 50px;
         }
-
         .side-menu {
             position: fixed;
             top: 0;
@@ -114,18 +98,15 @@
             transition: 0.3s ease;
             z-index: 1000;
         }
-
         .side-menu.active {
             left: 0;
         }
-
         .side-menu a {
             color: white;
             text-decoration: none;
             display: block;
             margin: 15px 0;
         }
-
         .side-menu .close-btn {
             font-size: 30px;
             cursor: pointer;
@@ -133,11 +114,9 @@
             top: 10px;
             right: 20px;
         }
-
         main {
             padding: 20px;
         }
-
         .catalog {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -145,7 +124,6 @@
             margin-top: 10px;
             margin-bottom: 40px;
         }
-
         .product {
             background-color: #fff;
             padding: 20px;
@@ -155,25 +133,20 @@
             transition: transform 0.3s ease;
             border: 2px solid #b31b1b;
         }
-
         .product:hover {
             transform: translateY(-5px);
         }
-
         .product img {
             width: 100px;
             height: auto;
         }
-
         .product h3 {
             color: #b31b1b;
             margin: 10px 0;
         }
-
         .product p {
             margin: 10px 0;
         }
-
         button {
             background-color: #b31b1b;
             color: white;
@@ -182,11 +155,9 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
         button:hover {
             background-color: #8a1212;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -199,7 +170,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .modal-content {
             background-color: white;
             padding: 20px;
@@ -208,7 +178,6 @@
             max-width: 500px;
             position: relative;
         }
-
         .modal-close {
             position: absolute;
             top: 10px;
@@ -220,29 +189,24 @@
             color: black;
             transition: none;
         }
-
         .modal-close:hover {
             background-color: transparent;
         }
-
         .form-row {
             margin-bottom: 15px;
             display: flex;
             flex-direction: column;
         }
-
         label {
             margin-bottom: 5px;
             font-weight: bold;
         }
-
         input {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px;
         }
-
         button[type="submit"] {
             background-color: #b31b1b;
             color: white;
@@ -253,53 +217,43 @@
             margin-top: 10px;
             width: 100%;
         }
-
         button[type="submit"]:hover {
             background-color: #8a1212;
         }
-
         .cart-items {
             list-style-type: none;
         }
-
         .cart-item {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-
         .cart-item img {
             margin-right: 10px;
             width: 50px;
             height: auto;
         }
-
         .cart-item button {
             margin-left: auto;
         }
-
         @media (max-width: 1200px) {
             .catalog {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-
         @media (max-width: 900px) {
             .catalog {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
-
         @media (max-width: 600px) {
             header {
                 padding: 5px;
                 height: 50px;
             }
-
             header .info h1 {
                 font-size: 18px;
             }
-
             .catalog {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -313,17 +267,15 @@
         <div></div>
         <div></div>
     </div>
-    <div class="cart-header" id="cart-button">
-        <img src="img/лщк.png" alt="Корзина" class="cart-icon">
-        <span class="cart-count">0</span>
-    </div>
     <div class="info">
         <h1>Магазин сигарет</h1>
         <p>Только лучшие бренды</p>
     </div>
-    <img src="img/logo.png" alt="Логотип" class="logo-image">
+    <div class="cart-header" id="cart-button">
+        <img src="img/logo.png" alt="Корзина" class="cart-icon">
+        <span class="cart-count">0</span>
+    </div>
 </header>
-
 <div class="side-menu" id="side-menu">
     <span class="close-btn" id="close-menu">&times;</span>
     <a href="#">О нас</a>
@@ -331,7 +283,6 @@
     <a href="#">Контакты</a>
     <a href="#">Политика конфиденциальности</a>
 </div>
-
 <main>
     <h2>Каталог сигарет</h2>
     <div class="catalog">
@@ -349,7 +300,6 @@
         </div>
         <!-- Добавьте больше товаров по желанию -->
     </div>
-
     <div class="modal" id="cart-modal">
         <div class="modal-content">
             <button class="modal-close" id="close-modal">&times;</button>
@@ -359,7 +309,6 @@
             <button id="checkout">Оформить заказ</button>
         </div>
     </div>
-
     <div class="modal" id="order-modal">
         <div class="modal-content">
             <button class="modal-close" id="close-order-modal">&times;</button>
@@ -390,7 +339,6 @@
         </div>
     </div>
 </main>
-
 <script>
     const cart = [];
     const cartModal = document.getElementById('cart-modal');
