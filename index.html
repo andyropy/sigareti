@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Интернет-магазин сигарет</title>
     <style>
+        .quantity-counter {
+            display: flex;
+            justify-content: space-between; /* Равномерное распределение кнопок и поля */
+            align-items: center;
+            margin: 10px auto; /* Выравнивание по центру */
+            border: 2px solid #b31b1b; /* Обводка всего счётчика */
+            border-radius: 5px; /* Закругленные углы */
+            overflow: hidden; /* Убираем внутренние отступы */
+            width: 120px; /* Фиксируем ширину */
+            box-sizing: border-box; /* Чтобы padding не влиял на размер */
+        }
+
+        .quantity-counter button {
+            background-color: #b31b1b;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 30px; /* Фиксируем ширину кнопок */
+            height: 40px; /* Фиксируем высоту кнопок для выравнивания */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quantity-counter button:hover {
+            background-color: #8a1212; /* Темнее при наведении */
+        }
+
+        .quantity-display {
+            width: 40px;
+            text-align: center;
+            border: none; /* Убираем стандартные границы */
+            font-size: 16px;
+            padding: 10px 0; /* Вертикальное выравнивание */
+            background-color: white; /* Белый фон для контраста с кнопками */
+            box-sizing: border-box; /* Учитываем padding в ширину */
+        }
+
+
         .info {
             display: flex;
             flex-direction: column;
@@ -45,6 +87,7 @@
             color: white;
             display: flex;
             align-items: center;
+            justify-content: center; /* Центрирует текстовый блок по горизонтали */
             padding: 10px;
             position: fixed;
             top: 0;
@@ -58,9 +101,19 @@
             color: #222;
             margin-top: 70px;
         }
+
         header .hamburger {
+            position: absolute;
+            left: 10px; /* Прижимаем гамбургер к левому краю */
             display: flex;
             flex-direction: column;
+            cursor: pointer;
+        }
+        header .cart-header {
+            position: absolute;
+            right: 10px; /* Прижимаем корзину к правому краю */
+            display: flex;
+            align-items: center;
             cursor: pointer;
         }
         header .hamburger div {
@@ -70,8 +123,7 @@
             margin: 4px 0;
         }
         header .info {
-            text-align: left;
-            margin-left: auto;
+            text-align: center; /* Центрирование содержимого */
         }
         header .info h1 {
             font-family: 'Helvetica Neue', sans-serif;
@@ -79,10 +131,7 @@
             letter-spacing: 1px;
             font-size: 24px;
         }
-        header .logo {
-            display: flex;
-            align-items: center;
-        }
+
         header .logo img {
             width: 50px;
         }
@@ -278,24 +327,46 @@
 </header>
 <div class="side-menu" id="side-menu">
     <span class="close-btn" id="close-menu">&times;</span>
-    <a href="#">О нас</a>
     <a href="#">Доставка</a>
-    <a href="#">Контакты</a>
-    <a href="#">Политика конфиденциальности</a>
+    <a href="#">Оформление</a>
+    <a href="#">Маркетинг</a>
+    <a href="#">О нас</a>
 </div>
 <main>
+    <div class="modal" id="info-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-info-modal">&times;</button>
+            <h2 id="info-title">Заголовок</h2>
+            <p id="info-text">Текст информации.</p>
+        </div>
+    </div>
+
     <h2>Каталог сигарет</h2>
     <div class="catalog">
         <div class="product">
             <img src="img/4823003205557.jpg" alt="Сигареты 1"/>
             <h3>Сигареты 1</h3>
             <p>Цена: 200₽</p>
+
+            <!-- Счётчик товара -->
+            <div class="quantity-counter">
+                <button class="decrease-btn">-</button>
+                <input type="text" value="1" class="quantity-display" readonly>
+                <button class="increase-btn">+</button>
+            </div>
+
             <button class="add-to-cart" data-name="Сигареты 1" data-price="200" data-img="img/4823003205557.jpg">Добавить в корзину</button>
         </div>
         <div class="product">
             <img src="img/4823003210070_1.jpg" alt="Сигареты 2"/>
             <h3>Сигареты 2</h3>
             <p>Цена: 250₽</p>
+            <!-- Счётчик товара -->
+            <div class="quantity-counter">
+                <button class="decrease-btn">-</button>
+                <input type="text" value="1" class="quantity-display" readonly>
+                <button class="increase-btn">+</button>
+            </div>
             <button class="add-to-cart" data-name="Сигареты 2" data-price="250" data-img="img/4823003210070_1.jpg">Добавить в корзину</button>
         </div>
         <!-- Добавьте больше товаров по желанию -->
@@ -340,68 +411,241 @@
     </div>
 </main>
 <script>
-    const cart = [];
+    // Модальные окна и их закрытие
+    const infoModal = document.getElementById('info-modal');
+    const closeInfoModalButton = document.getElementById('close-info-modal');
+
+    // Функция для открытия модального окна с информацией
+    function openInfoModal(title, text) {
+        const infoTitle = document.getElementById('info-title');
+        const infoText = document.getElementById('info-text');
+        infoTitle.textContent = title;
+        infoText.textContent = text;
+        infoModal.style.display = 'flex';
+    }
+
+    // Закрытие информационного модального окна
+    closeInfoModalButton.addEventListener('click', () => {
+        infoModal.style.display = 'none';
+    });
+
+    infoModal.addEventListener('click', (e) => {
+        if (e.target === infoModal) {
+            infoModal.style.display = 'none';
+        }
+    });
+
+    // Обработчики для бокового меню
+    const sideMenu = document.getElementById('side-menu');
+    const closeMenuButton = document.getElementById('close-menu');
+    const hamburgerButton = document.getElementById('hamburger');
+
+    // Открытие бокового меню
+    hamburgerButton.addEventListener('click', () => {
+        sideMenu.classList.toggle('active');
+    });
+
+    // Закрытие бокового меню
+    closeMenuButton.addEventListener('click', () => {
+        sideMenu.classList.remove('active');
+    });
+
+    // Закрытие бокового меню при клике вне его
+    document.addEventListener('click', (e) => {
+        if (sideMenu.classList.contains('active') && !sideMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
+            sideMenu.classList.remove('active');
+        }
+    });
+
+    // Обработчики для ссылок в боковом меню
+    document.querySelectorAll('.side-menu a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault(); // Отменяем переход по ссылке
+
+            const section = e.target.textContent;
+
+            switch (section) {
+                case 'Доставка':
+                    openInfoModal('Доставка', 'ДОСТАВКА СИГАРЕТ ПОЧТОЙ ПО УКРАИНЕ:\n' +
+                        'Покупатель оплачивает стоимость посылки и наложенный платеж согласно тарифам Новой Почты. Цены на сигареты указаны за 1 блок.\n' +
+                        '\n' +
+                        'ПРОСИМ ОБРАТИТЬ ВНИМАНИЕ НА СЛЕДУЮЩИЕ:\n' +
+                        '\n' +
+                        'Почтовая компания Новая Почта осуществляет доставку, упаковку и взимает комиссию за наложенный платеж, которая полностью оплачивается покупателем. Сумма этой комиссии зависит от условий каждой конкретной посылки и рассчитывается на отделении Новой Почты сотрудником компании. Мы не устанавливаем эту сумму и не имеем к ней отношения. Стандартная стоимость доставки составляет примерно 70 гривен. Также, при доставке наложенным платежом заказчик платит дополнительную плату в размере 20 гривен плюс 2% от общей суммы заказа.\n' +
+                        '\n' +
+                        'Полная предоплата на карту БАНКА доступна для всех наших клиентов которые желают купить сигареты дешево!');
+                    break;
+                case 'Оформление':
+                    openInfoModal('Оформление', 'Как приобрести сигареты оптом и в розницу в Украине выгодно, без предоплаты, с опцией наложенного платежа и с доставкой Новой Почтой? Вы можете выбрать как сигареты с акцизом, так и без акциза, включая сигареты без фильтра.\n' +
+                        '\n' +
+                        'Заказы принимаются 24/7 через наш сайт или прямо через менеджера.\n' +
+                        '\n' +
+                        'Процесс оформления заказа сигарет оптом на нашем сайте:\n' +
+                        '\n' +
+                        'Для того, чтобы купить сигареты дешево на нашем сайте — Вам необходимо положить выбранный товар путем его добавления через зеленую кнопку «в корзину» в корзину. Регулируйте количество блоков сигарет, используя кнопки регуляции, укажите свои имя, фамилию и контактный номер телефона, а также менеджер по которому можно с вами связаться. Заполните обязательные поля города и отделения Новой Почты.\n' +
+                        '\n' +
+                        '   — Выберите удобный способ оплаты: наложенный платеж или перевод на карту.\n' +
+                        '\n' +
+                        '   Оформление заказа: подтвердите заказ, нажав кнопку “оформить заказ”.');
+                    break;
+                case 'Маркетинг':
+                    openInfoModal('Маркетинг', 'МАРКЕТИНГ И ПРОДАЖА СИГАРЕТ МЕЛКИМ ОПТОМ\n' +
+                        'Купить не дорогие сигареты в Украине можно. Мы представляем бизнес-модель, где продавец действует в качестве посредника между оптовыми поставщиками в виде сигаретных фабрик и покупателями, фокусируясь на привлечении клиентов и продвижении своей торговой платформы. Основная задача заключается в эффективной маркетинговой стратегии и клиентском сервисе, в то время как поставщик берет на себя обработку и доставку заказов.\n' +
+                        '\n' +
+                        'Эта модель позволяет экономить на сигаретах между оптовой и розничной ценой, минимизируя расходы на логистике сигарет блоками. Маркетинг сигарет в Украине становится всё более популярным среди предпринимателей благодаря высокому спросу на самые дешевые безакцизные сигареты с фильтром и без фильтра по самым низким ценам.\n' +
+                        '\n' +
+                        'Партнерские условия нашего агентства прозрачны и понятны, включая отправку товаров наложенным платежом и прямую передачу заказов от клиентов через наши платформы.');
+                    break;
+                case 'О нас':
+                    openInfoModal('О нас', 'О МАГАЗИНЕ TOBACCO MARKET:\n' +
+                        'Наш интернет-магазин специализируется на покупке и продаже сигарет в розницу и мелким оптом. У нас можно заказать и купить недорогие и дешевые, а также безакцизные сигареты от 1 блока \n' +
+                        '\n' +
+                        'Наша стратегия по маркетингу позволяет нам гарантировать высокое качество нашей продукции и клиенту купить сигареты блоками по самой низкой цене. Наш интернет-магазин предлагает широкий ассортимент сигарет оптом и в розницу по доступным ценам. Мы осуществляем доставку по всей территории Украины.');
+                    break;
+                default:
+                    break;
+            }
+
+            // Закрытие бокового меню после клика на ссылку
+            sideMenu.classList.remove('active');
+        });
+    });
+    // Модальные окна и их закрытие
+    const cart = []; // Массив для хранения товаров в корзине
     const cartModal = document.getElementById('cart-modal');
-    const orderModal = document.getElementById('order-modal');
+    const cartButton = document.getElementById('cart-button');
     const cartItemsList = document.getElementById('cart-items');
     const totalPriceElement = document.getElementById('total-price');
     const cartCountElement = document.querySelector('.cart-count');
-    const cartButton = document.getElementById('cart-button');
-    const closeModalButton = document.getElementById('close-modal');
-    const closeOrderModalButton = document.getElementById('close-order-modal');
-    const closeMenuButton = document.getElementById('close-menu');
-    const sideMenu = document.getElementById('side-menu');
-    const hamburgerButton = document.getElementById('hamburger');
 
+    // Обновление количества товаров в индикаторе корзины
     function updateCartCount() {
-        cartCountElement.textContent = cart.length;
-        cartCountElement.style.display = cart.length > 0 ? 'block' : 'none';
+        const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0); // Суммируем количество всех товаров
+        cartCountElement.textContent = totalQuantity; // Общее количество товаров
+        cartCountElement.style.display = totalQuantity > 0 ? 'block' : 'none'; // Скрываем индикатор, если товаров нет
     }
 
+    // Обновление отображения товаров в корзине
     function updateCartDisplay() {
         cartItemsList.innerHTML = '';
         let totalPrice = 0;
 
-        cart.forEach(item => {
-            totalPrice += item.price;
+        cart.forEach((item, index) => {
+            totalPrice += item.price * item.quantity; // Считаем итоговую сумму с учётом количества каждого товара
             const li = document.createElement('li');
             li.classList.add('cart-item');
-            li.innerHTML = `<img src="${item.img}" alt="${item.name}"> ${item.name} - ${item.price}₽ <button class="remove-item">Удалить</button>`;
+            li.innerHTML = `
+            <img src="${item.img}" alt="${item.name}" width="50">
+            ${item.name} - ${item.price}₽ x
+            <div class="quantity-counter">
+                <button class="decrease-btn" data-index="${index}">-</button>
+                <input type="text" value="${item.quantity}" class="quantity-display" readonly>
+                <button class="increase-btn" data-index="${index}">+</button>
+            </div>
+            <button class="remove-item" data-index="${index}">Удалить</button>`;
             cartItemsList.appendChild(li);
         });
 
         totalPriceElement.textContent = totalPrice;
     }
 
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const name = e.target.getAttribute('data-name');
-            const price = parseInt(e.target.getAttribute('data-price'));
-            const img = e.target.getAttribute('data-img');
+    // Добавление товара в корзину
+    document.querySelectorAll('.product').forEach(product => {
+        const decreaseBtn = product.querySelector('.decrease-btn');
+        const increaseBtn = product.querySelector('.increase-btn');
+        const quantityDisplay = product.querySelector('.quantity-display');
+        const addToCartBtn = product.querySelector('.add-to-cart');
 
-            cart.push({ name, price, img });
-            updateCartCount();
-            updateCartDisplay();
+        let quantity = parseInt(quantityDisplay.value);
+
+        // Уменьшение количества товара
+        decreaseBtn.addEventListener('click', () => {
+            if (quantity > 1) {
+                quantity--;
+                quantityDisplay.value = quantity;
+            }
+        });
+
+        // Увеличение количества товара
+        increaseBtn.addEventListener('click', () => {
+            quantity++;
+            quantityDisplay.value = quantity;
+        });
+
+        // Добавление товара в корзину
+        addToCartBtn.addEventListener('click', () => {
+            const name = addToCartBtn.getAttribute('data-name');
+            const price = parseInt(addToCartBtn.getAttribute('data-price'));
+            const img = addToCartBtn.getAttribute('data-img');
+            const totalQuantity = parseInt(quantityDisplay.value); // Количество выбранных товаров
+
+            // Проверяем, есть ли уже такой товар в корзине
+            const existingItemIndex = cart.findIndex(item => item.name === name);
+            if (existingItemIndex > -1) {
+                // Если товар уже в корзине, увеличиваем его количество
+                cart[existingItemIndex].quantity += totalQuantity;
+            } else {
+                // Если товара ещё нет в корзине, добавляем его
+                cart.push({ name, price, img, quantity: totalQuantity });
+            }
+
+            updateCartCount(); // Обновляем индикатор количества товаров в корзине
+            updateCartDisplay(); // Обновляем визуальное отображение товаров в корзине
         });
     });
 
+    // Открытие корзины
     cartButton.addEventListener('click', () => {
         updateCartDisplay();
         cartModal.style.display = 'flex';
     });
 
-    closeModalButton.addEventListener('click', () => {
+    // Закрытие корзины
+    document.getElementById('close-modal').addEventListener('click', () => {
         cartModal.style.display = 'none';
     });
 
-    closeOrderModalButton.addEventListener('click', () => {
-        orderModal.style.display = 'none';
+    // Удаление товара из корзины
+    cartItemsList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-item')) {
+            const itemIndex = e.target.getAttribute('data-index');
+            cart.splice(itemIndex, 1); // Удаляем товар из корзины по индексу
+            updateCartCount(); // Обновляем индикатор количества товаров
+            updateCartDisplay(); // Обновляем визуальное отображение корзины
+        }
     });
 
-    cartModal.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-            cartModal.style.display = 'none';
+    // Изменение количества товаров в корзине
+    cartItemsList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('decrease-btn')) {
+            const itemIndex = e.target.getAttribute('data-index');
+            if (cart[itemIndex].quantity > 1) {
+                cart[itemIndex].quantity--; // Уменьшаем количество товара
+            } else {
+                cart.splice(itemIndex, 1); // Если количество 0, удаляем товар из корзины
+            }
+            updateCartCount(); // Обновляем индикатор количества товаров
+            updateCartDisplay(); // Обновляем визуальное отображение корзины
         }
+
+        if (e.target.classList.contains('increase-btn')) {
+            const itemIndex = e.target.getAttribute('data-index');
+            cart[itemIndex].quantity++; // Увеличиваем количество товара
+            updateCartCount(); // Обновляем индикатор количества товаров
+            updateCartDisplay(); // Обновляем визуальное отображение корзины
+        }
+    });
+
+
+    // Открытие модального окна заказа
+    document.getElementById('checkout').addEventListener('click', () => {
+        cartModal.style.display = 'none';
+        orderModal.style.display = 'flex'; // Открытие модального окна оформления заказа
+    });
+
+    // Закрытие модального окна заказа
+    closeOrderModalButton.addEventListener('click', () => {
+        orderModal.style.display = 'none';
     });
 
     orderModal.addEventListener('click', (e) => {
@@ -410,25 +654,7 @@
         }
     });
 
-    document.getElementById('checkout').addEventListener('click', () => {
-        cartModal.style.display = 'none';
-        orderModal.style.display = 'flex'; // Открываем модальное окно оформления заказа
-    });
-
-    hamburgerButton.addEventListener('click', () => {
-        sideMenu.classList.toggle('active');
-    });
-
-    closeMenuButton.addEventListener('click', () => {
-        sideMenu.classList.remove('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (sideMenu.classList.contains('active') && !sideMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
-            sideMenu.classList.remove('active');
-        }
-    });
-
+    // Удаление товара из корзины
     cartItemsList.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-item')) {
             const itemName = e.target.parentElement.textContent.split(' - ')[0].trim();
@@ -441,11 +667,54 @@
         }
     });
 
+    // Форма заказа
     document.getElementById('order-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        // Здесь можно добавить логику для обработки заказа
+        // Обработка заказа
         alert('Заказ оформлен!');
-        orderModal.style.display = 'none'; // Закрываем модальное окно
+        orderModal.style.display = 'none'; // Закрываем окно
+    });
+
+    // Работа с карточками товаров и счётчиком
+    document.querySelectorAll('.product').forEach(product => {
+        const decreaseBtn = product.querySelector('.decrease-btn');
+        const increaseBtn = product.querySelector('.increase-btn');
+        const quantityDisplay = product.querySelector('.quantity-display');
+        const addToCartBtn = product.querySelector('.add-to-cart');
+
+        let quantity = parseInt(quantityDisplay.value);
+
+        // Уменьшение количества товара
+        decreaseBtn.addEventListener('click', () => {
+            if (quantity > 1) {
+                quantity--;
+                quantityDisplay.value = quantity;
+            }
+        });
+
+        // Увеличение количества товара
+        increaseBtn.addEventListener('click', () => {
+            quantity++;
+            quantityDisplay.value = quantity;
+        });
+
+        // Добавление товара в корзину
+        addToCartBtn.addEventListener('click', () => {
+            const name = addToCartBtn.getAttribute('data-name');
+            const price = parseInt(addToCartBtn.getAttribute('data-price'));
+            const img = addToCartBtn.getAttribute('data-img');
+            const totalQuantity = parseInt(quantityDisplay.value);
+
+            const existingItemIndex = cart.findIndex(item => item.name === name);
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].quantity += totalQuantity; // Если товар уже есть, обновляем его количество
+            } else {
+                cart.push({ name, price, img, quantity: totalQuantity });
+            }
+
+            updateCartCount();
+            updateCartDisplay();
+        });
     });
 </script>
 </body>
