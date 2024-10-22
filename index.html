@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Интернет-магазин сигарет</title>
     <style>
+        /* Основные стили для счетчика */
         .quantity-counter {
             display: flex;
-            justify-content: space-between; /* Равномерное распределение кнопок и поля */
+            justify-content: space-between;
             align-items: center;
-            margin: 10px auto; /* Выравнивание по центру */
-            border: 2px solid #b31b1b; /* Обводка всего счётчика */
-            border-radius: 5px; /* Закругленные углы */
-            overflow: hidden; /* Убираем внутренние отступы */
-            width: 120px; /* Фиксируем ширину */
-            box-sizing: border-box; /* Чтобы padding не влиял на размер */
+            margin: 10px auto;
+            border: 2px solid #b31b1b;
+            border-radius: 5px;
+            overflow: hidden; /* Убираем выход элементов за границы */
+            width: 120px;
+            box-sizing: border-box;
         }
 
         .quantity-counter button {
@@ -25,8 +26,8 @@
             font-size: 18px;
             cursor: pointer;
             transition: background-color 0.3s;
-            width: 30px; /* Фиксируем ширину кнопок */
-            height: 40px; /* Фиксируем высоту кнопок для выравнивания */
+            width: 30px;
+            height: 40px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -45,6 +46,23 @@
             background-color: white; /* Белый фон для контраста с кнопками */
             box-sizing: border-box; /* Учитываем padding в ширину */
         }
+        /* Стили для корзины */
+        .cart-items .quantity-counter {
+            width: 80px; /* Немного уменьшаем ширину для корзины */
+        }
+
+        .cart-items .quantity-counter button {
+            width: 25px; /* Уменьшаем ширину кнопок */
+            height: 35px; /* Также немного уменьшаем высоту */
+            padding: 5px;
+        }
+
+        .cart-items .quantity-display {
+            width: 30px; /* Узкая ширина для удобства отображения в корзине */
+            padding: 5px 0; /* Уменьшаем отступы */
+            font-size: 14px; /* Чуть меньше шрифт */
+        }
+
 
 
         .info {
@@ -69,13 +87,13 @@
         .cart-count {
             position: absolute;
             top: -5px;
-            right: -10px;
+            right: -5px; /* Смещаем индикатор ближе к кнопке, чтобы он не выходил за экран */
             background-color: red;
             color: white;
             border-radius: 50%;
-            padding: 5px 10px;
+            padding: 5px 8px; /* Подбираем размер индикатора */
             font-size: 12px;
-            display: none;
+            display: none; /* По умолчанию скрыт */
         }
         * {
             margin: 0;
@@ -104,14 +122,14 @@
 
         header .hamburger {
             position: absolute;
-            left: 10px; /* Прижимаем гамбургер к левому краю */
+            left: 20px; /* Прижимаем гамбургер к левому краю */
             display: flex;
             flex-direction: column;
             cursor: pointer;
         }
         header .cart-header {
             position: absolute;
-            right: 10px; /* Прижимаем корзину к правому краю */
+            right: 1px; /* Прижимаем корзину ближе к правому краю */
             display: flex;
             align-items: center;
             cursor: pointer;
@@ -219,6 +237,7 @@
             justify-content: center;
             align-items: center;
         }
+        /* Стили для модального окна */
         .modal-content {
             background-color: white;
             padding: 20px;
@@ -226,7 +245,26 @@
             width: 90%;
             max-width: 500px;
             position: relative;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Добавим тень для эффекта глубины */
+            text-align: left; /* Выравнивание текста по левому краю */
+            line-height: 1.6; /* Увеличим межстрочный интервал для улучшения читаемости */
+            font-size: 16px; /* Чуть увеличим размер шрифта */
+            color: #333; /* Более мягкий цвет текста для комфортного чтения */
         }
+
+        .modal-content h2 {
+            font-size: 22px; /* Увеличим заголовок */
+            margin-bottom: 15px; /* Отступ снизу заголовка для разделения с текстом */
+            text-align: center; /* Центрирование заголовка */
+            color: #b31b1b; /* Красный цвет заголовка для акцента */
+        }
+
+        .modal-content p {
+            margin-bottom: 15px; /* Отступы между параграфами для разделения текста */
+            text-align: justify; /* Выравнивание текста по ширине для аккуратности */
+        }
+
+        /* Можем также сделать кнопки закрытия более аккуратными */
         .modal-close {
             position: absolute;
             top: 10px;
@@ -235,9 +273,11 @@
             border: none;
             font-size: 20px;
             cursor: pointer;
-            color: black;
-            transition: none;
+            color: #333; /* Более мягкий цвет */
+            transition: color 0.3s ease;
         }
+
+
         .modal-close:hover {
             background-color: transparent;
         }
@@ -460,57 +500,32 @@
     // Обработчики для ссылок в боковом меню
     document.querySelectorAll('.side-menu a').forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault(); // Отменяем переход по ссылке
+            e.preventDefault();
 
             const section = e.target.textContent;
 
             switch (section) {
                 case 'Доставка':
-                    openInfoModal('Доставка', 'ДОСТАВКА СИГАРЕТ ПОЧТОЙ ПО УКРАИНЕ:\n' +
-                        'Покупатель оплачивает стоимость посылки и наложенный платеж согласно тарифам Новой Почты. Цены на сигареты указаны за 1 блок.\n' +
-                        '\n' +
-                        'ПРОСИМ ОБРАТИТЬ ВНИМАНИЕ НА СЛЕДУЮЩИЕ:\n' +
-                        '\n' +
-                        'Почтовая компания Новая Почта осуществляет доставку, упаковку и взимает комиссию за наложенный платеж, которая полностью оплачивается покупателем. Сумма этой комиссии зависит от условий каждой конкретной посылки и рассчитывается на отделении Новой Почты сотрудником компании. Мы не устанавливаем эту сумму и не имеем к ней отношения. Стандартная стоимость доставки составляет примерно 70 гривен. Также, при доставке наложенным платежом заказчик платит дополнительную плату в размере 20 гривен плюс 2% от общей суммы заказа.\n' +
-                        '\n' +
-                        'Полная предоплата на карту БАНКА доступна для всех наших клиентов которые желают купить сигареты дешево!');
+                    openInfoModal('Доставка', 'ДОСТАВКА СИГАРЕТ ПОЧТОЙ ПО УКРАИНЕ: Покупатель оплачивает стоимость посылки и наложенный платеж согласно тарифам Новой Почты. Цены на сигареты указаны за 1 блок. ПРОСИМ ОБРАТИТЬ ВНИМАНИЕ НА СЛЕДУЮЩИЕ: Почтовая компания Новая Почта осуществляет доставку, упаковку и взимает комиссию за наложенный платеж, которая полностью оплачивается покупателем. Сумма этой комиссии зависит от условий каждой конкретной посылки и рассчитывается на отделении Новой Почты сотрудником компании. Мы не устанавливаем эту сумму и не имеем к ней отношения. Стандартная стоимость доставки составляет примерно 70 гривен. Также, при доставке наложенным платежом заказчик платит дополнительную плату в размере 20 гривен плюс 2% от общей суммы заказа. Полная предоплата на карту БАНКА доступна для всех наших клиентов которые желают купить сигареты дешево!\n');
                     break;
                 case 'Оформление':
-                    openInfoModal('Оформление', 'Как приобрести сигареты оптом и в розницу в Украине выгодно, без предоплаты, с опцией наложенного платежа и с доставкой Новой Почтой? Вы можете выбрать как сигареты с акцизом, так и без акциза, включая сигареты без фильтра.\n' +
-                        '\n' +
-                        'Заказы принимаются 24/7 через наш сайт или прямо через менеджера.\n' +
-                        '\n' +
-                        'Процесс оформления заказа сигарет оптом на нашем сайте:\n' +
-                        '\n' +
-                        'Для того, чтобы купить сигареты дешево на нашем сайте — Вам необходимо положить выбранный товар путем его добавления через зеленую кнопку «в корзину» в корзину. Регулируйте количество блоков сигарет, используя кнопки регуляции, укажите свои имя, фамилию и контактный номер телефона, а также менеджер по которому можно с вами связаться. Заполните обязательные поля города и отделения Новой Почты.\n' +
-                        '\n' +
-                        '   — Выберите удобный способ оплаты: наложенный платеж или перевод на карту.\n' +
-                        '\n' +
-                        '   Оформление заказа: подтвердите заказ, нажав кнопку “оформить заказ”.');
+                    openInfoModal('Как приобрести сигареты оптом и в розницу в Украине выгодно, без предоплаты, с опцией наложенного платежа и с доставкой Новой Почтой? Вы можете выбрать как сигареты с акцизом, так и без акциза, включая сигареты без фильтра. Заказы принимаются 24/7 через наш сайт или прямо через менеджера. Процесс оформления заказа сигарет оптом на нашем сайте: Для того, чтобы купить сигареты дешево на нашем сайте — Вам необходимо положить выбранный товар путем его добавления через зеленую кнопку «в корзину» в корзину. Регулируйте количество блоков сигарет, используя кнопки регуляции, укажите свои имя, фамилию и контактный номер телефона, а также менеджер по которому можно с вами связаться. Заполните обязательные поля города и отделения Новой Почты. — Выберите удобный способ оплаты: наложенный платеж или перевод на карту. Оформление заказа: подтвердите заказ, нажав кнопку “оформить заказ”.\n');
                     break;
                 case 'Маркетинг':
-                    openInfoModal('Маркетинг', 'МАРКЕТИНГ И ПРОДАЖА СИГАРЕТ МЕЛКИМ ОПТОМ\n' +
-                        'Купить не дорогие сигареты в Украине можно. Мы представляем бизнес-модель, где продавец действует в качестве посредника между оптовыми поставщиками в виде сигаретных фабрик и покупателями, фокусируясь на привлечении клиентов и продвижении своей торговой платформы. Основная задача заключается в эффективной маркетинговой стратегии и клиентском сервисе, в то время как поставщик берет на себя обработку и доставку заказов.\n' +
-                        '\n' +
-                        'Эта модель позволяет экономить на сигаретах между оптовой и розничной ценой, минимизируя расходы на логистике сигарет блоками. Маркетинг сигарет в Украине становится всё более популярным среди предпринимателей благодаря высокому спросу на самые дешевые безакцизные сигареты с фильтром и без фильтра по самым низким ценам.\n' +
-                        '\n' +
-                        'Партнерские условия нашего агентства прозрачны и понятны, включая отправку товаров наложенным платежом и прямую передачу заказов от клиентов через наши платформы.');
+                    openInfoModal('Маркетинг', 'МАРКЕТИНГ И ПРОДАЖА СИГАРЕТ МЕЛКИМ ОПТОМ Купить не дорогие сигареты в Украине можно. Мы представляем бизнес-модель, где продавец действует в качестве посредника между оптовыми поставщиками в виде сигаретных фабрик и покупателями, фокусируясь на привлечении клиентов и продвижении своей торговой платформы. Основная задача заключается в эффективной маркетинговой стратегии и клиентском сервисе, в то время как поставщик берет на себя обработку и доставку заказов. Эта модель позволяет экономить на сигаретах между оптовой и розничной ценой, минимизируя расходы на логистике сигарет блоками. Маркетинг сигарет в Украине становится всё более популярным среди предпринимателей благодаря высокому спросу на самые дешевые безакцизные сигареты с фильтром и без фильтра по самым низким ценам. Партнерские условия нашего агентства прозрачны и понятны, включая отправку товаров наложенным платежом и прямую передачу заказов от клиентов через наши платформы.\n');
                     break;
                 case 'О нас':
-                    openInfoModal('О нас', 'О МАГАЗИНЕ TOBACCO MARKET:\n' +
-                        'Наш интернет-магазин специализируется на покупке и продаже сигарет в розницу и мелким оптом. У нас можно заказать и купить недорогие и дешевые, а также безакцизные сигареты от 1 блока \n' +
-                        '\n' +
-                        'Наша стратегия по маркетингу позволяет нам гарантировать высокое качество нашей продукции и клиенту купить сигареты блоками по самой низкой цене. Наш интернет-магазин предлагает широкий ассортимент сигарет оптом и в розницу по доступным ценам. Мы осуществляем доставку по всей территории Украины.');
+                    openInfoModal('О нас', 'О МАГАЗИНЕ TOBACCO MARKET: Наш интернет-магазин специализируется на покупке и продаже сигарет в розницу и мелким оптом. У нас можно заказать и купить недорогие и дешевые, а также безакцизные сигареты от 1 блока Наша стратегия по маркетингу позволяет нам гарантировать высокое качество нашей продукции и клиенту купить сигареты блоками по самой низкой цене. Наш интернет-магазин предлагает широкий ассортимент сигарет оптом и в розницу по доступным ценам. Мы осуществляем доставку по всей территории Украины.');
                     break;
                 default:
                     break;
             }
 
-            // Закрытие бокового меню после клика на ссылку
             sideMenu.classList.remove('active');
         });
     });
-    // Модальные окна и их закрытие
+
+    // Корзина
     const cart = []; // Массив для хранения товаров в корзине
     const cartModal = document.getElementById('cart-modal');
     const cartButton = document.getElementById('cart-button');
@@ -518,7 +533,7 @@
     const totalPriceElement = document.getElementById('total-price');
     const cartCountElement = document.querySelector('.cart-count');
 
-    // Обновление количества товаров в индикаторе корзины
+    // Обновление индикатора количества товаров в корзине
     function updateCartCount() {
         const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0); // Суммируем количество всех товаров
         cartCountElement.textContent = totalQuantity; // Общее количество товаров
@@ -577,7 +592,7 @@
             const name = addToCartBtn.getAttribute('data-name');
             const price = parseInt(addToCartBtn.getAttribute('data-price'));
             const img = addToCartBtn.getAttribute('data-img');
-            const totalQuantity = parseInt(quantityDisplay.value); // Количество выбранных товаров
+            const totalQuantity = parseInt(quantityDisplay.value);
 
             // Проверяем, есть ли уже такой товар в корзине
             const existingItemIndex = cart.findIndex(item => item.name === name);
@@ -596,8 +611,15 @@
 
     // Открытие корзины
     cartButton.addEventListener('click', () => {
-        updateCartDisplay();
+        updateCartDisplay(); // Обновляем визуальное отображение корзины перед открытием
         cartModal.style.display = 'flex';
+    });
+
+    // Закрытие корзины при клике вне её содержимого
+    cartModal.addEventListener('click', (e) => {
+        if (e.target === cartModal) {
+            cartModal.style.display = 'none';
+        }
     });
 
     // Закрытие корзины
@@ -617,8 +639,9 @@
 
     // Изменение количества товаров в корзине
     cartItemsList.addEventListener('click', (e) => {
+        const itemIndex = e.target.getAttribute('data-index');
+
         if (e.target.classList.contains('decrease-btn')) {
-            const itemIndex = e.target.getAttribute('data-index');
             if (cart[itemIndex].quantity > 1) {
                 cart[itemIndex].quantity--; // Уменьшаем количество товара
             } else {
@@ -629,93 +652,34 @@
         }
 
         if (e.target.classList.contains('increase-btn')) {
-            const itemIndex = e.target.getAttribute('data-index');
             cart[itemIndex].quantity++; // Увеличиваем количество товара
             updateCartCount(); // Обновляем индикатор количества товаров
             updateCartDisplay(); // Обновляем визуальное отображение корзины
         }
     });
 
-
     // Открытие модального окна заказа
     document.getElementById('checkout').addEventListener('click', () => {
-        cartModal.style.display = 'none';
-        orderModal.style.display = 'flex'; // Открытие модального окна оформления заказа
+        cartModal.style.display = 'none'; // Закрываем корзину
+        const orderModal = document.getElementById('order-modal');
+        orderModal.style.display = 'flex'; // Открываем окно оформления заказа
     });
 
     // Закрытие модального окна заказа
+    const closeOrderModalButton = document.getElementById('close-order-modal');
+    const orderModal = document.getElementById('order-modal');
+
     closeOrderModalButton.addEventListener('click', () => {
         orderModal.style.display = 'none';
     });
 
+    // Закрытие модального окна заказа при клике вне его содержимого
     orderModal.addEventListener('click', (e) => {
         if (e.target === orderModal) {
             orderModal.style.display = 'none';
         }
     });
 
-    // Удаление товара из корзины
-    cartItemsList.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-item')) {
-            const itemName = e.target.parentElement.textContent.split(' - ')[0].trim();
-            const itemIndex = cart.findIndex(item => item.name === itemName);
-            if (itemIndex > -1) {
-                cart.splice(itemIndex, 1);
-                updateCartCount();
-                updateCartDisplay();
-            }
-        }
-    });
-
-    // Форма заказа
-    document.getElementById('order-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        // Обработка заказа
-        alert('Заказ оформлен!');
-        orderModal.style.display = 'none'; // Закрываем окно
-    });
-
-    // Работа с карточками товаров и счётчиком
-    document.querySelectorAll('.product').forEach(product => {
-        const decreaseBtn = product.querySelector('.decrease-btn');
-        const increaseBtn = product.querySelector('.increase-btn');
-        const quantityDisplay = product.querySelector('.quantity-display');
-        const addToCartBtn = product.querySelector('.add-to-cart');
-
-        let quantity = parseInt(quantityDisplay.value);
-
-        // Уменьшение количества товара
-        decreaseBtn.addEventListener('click', () => {
-            if (quantity > 1) {
-                quantity--;
-                quantityDisplay.value = quantity;
-            }
-        });
-
-        // Увеличение количества товара
-        increaseBtn.addEventListener('click', () => {
-            quantity++;
-            quantityDisplay.value = quantity;
-        });
-
-        // Добавление товара в корзину
-        addToCartBtn.addEventListener('click', () => {
-            const name = addToCartBtn.getAttribute('data-name');
-            const price = parseInt(addToCartBtn.getAttribute('data-price'));
-            const img = addToCartBtn.getAttribute('data-img');
-            const totalQuantity = parseInt(quantityDisplay.value);
-
-            const existingItemIndex = cart.findIndex(item => item.name === name);
-            if (existingItemIndex > -1) {
-                cart[existingItemIndex].quantity += totalQuantity; // Если товар уже есть, обновляем его количество
-            } else {
-                cart.push({ name, price, img, quantity: totalQuantity });
-            }
-
-            updateCartCount();
-            updateCartDisplay();
-        });
-    });
 </script>
 </body>
 </html>
